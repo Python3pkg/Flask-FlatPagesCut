@@ -54,6 +54,6 @@ Making a new release
 
 * Tag the release and push to GitHub:
 
-      $ git tag v0.X  # Same version number as in flask_flatpages/__init__.py
+      $ git tag v0.X  # Same version number as in flask_flatpagescut/__init__.py
       $ git push
       $ git push --tags
