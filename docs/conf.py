@@ -106,7 +106,7 @@ html_theme = 'flask_small'
 #html_theme_options = {}
 html_theme_options = {
      'index_logo': None,
-     'github_fork': 'SimonSapin/Flask-FlatPages'
+     'github_fork': 'billyfbrain/Flask-FlatPagesCut'
 }
 
 # Add any paths that contain custom themes here, relative to this directory.

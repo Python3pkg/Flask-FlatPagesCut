@@ -27,7 +27,7 @@ except ImportError:
     PygmentsHtmlFormatter = None
 
 
-VERSION = '0.5'
+VERSION = '0.5.1'
 
 
 def pygmented_markdown(text, flatpages=None):
@@ -97,10 +97,11 @@ class Page(object):
         self.path = path
         #: Content of the pages.
         self._meta_yaml = meta_yaml
-        try:
+        if u':cut:' in content:
             self.body = content.split(u':cut:')[1]
             self.preview = content.split(u':cut:')[0]
-        except Exception:
+        else:
+            self.preview = 0
             self.body = content
         self.html_renderer = html_renderer
 
@@ -117,9 +118,9 @@ class Page(object):
         """In a template, ``{{ page }}`` is equivalent to
         ``{{ page.html|safe }}``.
         """
-        try:
+        if self.preview:
             return self.cut+self.html
-        except Exception:
+        else:
             return self.html
 
     def __repr__(self):
