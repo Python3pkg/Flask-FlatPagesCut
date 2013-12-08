@@ -1,3 +1,11 @@
+Added :cut: tag...
+
+In *.md file add :cut: for split content into preview and body.
+In templates {{page.cut|safe}} - preview, {{page.html}} - body, {{page}} - preview and body.
+
+Original readme:
+===============
+
 Flask-FlatPages
 ---------------
 
