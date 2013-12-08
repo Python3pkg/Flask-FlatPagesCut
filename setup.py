@@ -18,7 +18,7 @@ setup(
     license='BSD',
     author='Vasily Klyuev',
     author_email='billyfbrain@gmail.com',
-    description='Fork Flask-FlatPages (Provides flat static pages to a Flask application)',
+    description='Flask-FlatPagesCut is fork Flask-FlatPages (Provides flat static pages to a Flask application)',
     long_description=README,
     packages=find_packages(),
     # test pages
