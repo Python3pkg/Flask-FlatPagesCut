@@ -10,7 +10,7 @@
     :license: BSD, see LICENSE for more details.
 """
 
-from __future__ import with_statement
+
 
 import inspect
 import itertools
@@ -20,6 +20,7 @@ import flask
 import markdown
 import yaml
 import werkzeug
+import collections
 
 try:
     from pygments.formatters import HtmlFormatter as PygmentsHtmlFormatter
@@ -97,9 +98,9 @@ class Page(object):
         self.path = path
         #: Content of the pages.
         self._meta_yaml = meta_yaml
-        if u':cut:' in content:
-            self.body = content.split(u':cut:')[1]
-            self.preview = content.split(u':cut:')[0]
+        if ':cut:' in content:
+            self.body = content.split(':cut:')[1]
+            self.preview = content.split(':cut:')[0]
         else:
             self.preview = 0
             self.body = content
@@ -189,7 +190,7 @@ class FlatPages(object):
     def __iter__(self):
         """Iterate on all :class:`Page` objects.
         """
-        return self._pages.itervalues()
+        return iter(self._pages.values())
 
     def init_app(self, app):
         """Used to initialize an application, useful for passing an app later
@@ -297,14 +298,14 @@ class FlatPages(object):
                     _walk(full_name, path_prefix + (name,))
                 elif name.endswith(extension):
                     name_without_extension = name[:-len(extension)]
-                    path = u'/'.join(path_prefix + (name_without_extension, ))
+                    path = '/'.join(path_prefix + (name_without_extension, ))
                     pages[path] = self._load_file(path, full_name)
 
         extension = self.config('extension')
         pages = {}
 
         # Fail if the root is a non-ASCII byte string. Use Unicode.
-        _walk(unicode(self.root))
+        _walk(str(self.root))
 
         return pages
 
@@ -313,16 +314,16 @@ class FlatPages(object):
 
         :return: initialized :class:`Page` instance.
         """
-        lines = iter(string.split(u'\n'))
+        lines = iter(string.split('\n'))
         # Read lines until an empty line is encountered.
-        meta = u'\n'.join(itertools.takewhile(unicode.strip, lines))
+        meta = '\n'.join(itertools.takewhile(str.strip, lines))
         # The rest is the content. `lines` is an iterator so it continues
         # where `itertools.takewhile` left it.
-        content = u'\n'.join(lines)
+        content = '\n'.join(lines)
 
         html_renderer = self.config('html_renderer')
 
-        if not callable(html_renderer):
+        if not isinstance(html_renderer, collections.Callable):
             html_renderer = werkzeug.import_string(html_renderer)
 
         html_renderer = self._smart_html_renderer(html_renderer)

@@ -7,7 +7,7 @@
     :license: BSD, see LICENSE for more details.
 """
 
-from __future__ import with_statement
+
 
 import datetime
 import os
@@ -135,12 +135,12 @@ class TestFlatPages(unittest.TestCase):
 
     def _unicode(self, pages):
         hello = pages.get('hello')
-        self.assertEquals(hello.meta, {'title': u'世界',
+        self.assertEquals(hello.meta, {'title': '世界',
                                        'template': 'article.html'})
-        self.assertEquals(hello['title'], u'世界')
-        self.assertEquals(hello.body, u'Hello, *世界*!\n')
+        self.assertEquals(hello['title'], '世界')
+        self.assertEquals(hello.body, 'Hello, *世界*!\n')
         # Markdow
-        self.assertEquals(hello.html, u'<p>Hello, <em>世界</em>!</p>')
+        self.assertEquals(hello.html, '<p>Hello, <em>世界</em>!</p>')
 
     def test_unicode(self):
         pages = FlatPages(Flask(__name__))
@@ -157,13 +157,13 @@ class TestFlatPages(unittest.TestCase):
         def hello_renderer(body, pages):
             return pages.get('hello').body.upper()
 
-        for renderer in (unicode.upper, 'string.upper', hello_renderer):
+        for renderer in (str.upper, 'string.upper', hello_renderer):
             pages = FlatPages(Flask(__name__))
             pages.app.config['FLATPAGES_HTML_RENDERER'] = renderer
             hello = pages.get('hello')
-            self.assertEquals(hello.body, u'Hello, *世界*!\n')
+            self.assertEquals(hello.body, 'Hello, *世界*!\n')
             # Upper-case, markdown not interpreted
-            self.assertEquals(hello.html, u'HELLO, *世界*!\n')
+            self.assertEquals(hello.html, 'HELLO, *世界*!\n')
 
     def test_markdown_extensions(self):
         pages = FlatPages(Flask(__name__))
@@ -171,7 +171,7 @@ class TestFlatPages(unittest.TestCase):
         hello = pages.get('headerid')
         self.assertEquals(
             hello.html,
-            u'<h1>Page Header</h1>\n<h2>Paragraph Header</h2>\n<p>Text</p>'
+            '<h1>Page Header</h1>\n<h2>Paragraph Header</h2>\n<p>Text</p>'
         )
 
         pages.app.config['FLATPAGES_MARKDOWN_EXTENSIONS'] = []
@@ -181,7 +181,7 @@ class TestFlatPages(unittest.TestCase):
         hello = pages.get('headerid')
         self.assertEquals(
             hello.html,
-            u'<h1>Page Header</h1>\n<h2>Paragraph Header</h2>\n<p>Text</p>'
+            '<h1>Page Header</h1>\n<h2>Paragraph Header</h2>\n<p>Text</p>'
         )
 
         pages.app.config['FLATPAGES_MARKDOWN_EXTENSIONS'] = [
@@ -193,9 +193,9 @@ class TestFlatPages(unittest.TestCase):
         hello = pages.get('headerid')
         self.assertEquals(
             hello.html,
-            u'<h1 id="page-header">Page Header</h1>\n'
-            u'<h2 id="paragraph-header">Paragraph Header</h2>\n'
-            u'<p>Text</p>'
+            '<h1 id="page-header">Page Header</h1>\n'
+            '<h2 id="paragraph-header">Paragraph Header</h2>\n'
+            '<p>Text</p>'
         )
 
     def test_other_extension(self):
@@ -360,8 +360,7 @@ class TestFlatPages(unittest.TestCase):
         def safe_unicode(sequence):
             if sys.platform != 'darwin':
                 return sequence
-            return map(lambda item: unicodedata.normalize('NFC', item),
-                       sequence)
+            return [unicodedata.normalize('NFC', item) for item in sequence]
 
         app = Flask(__name__)
         with temp_pages(app) as pages:
@@ -373,11 +372,11 @@ class TestFlatPages(unittest.TestCase):
                      'headerid',
                      'hello']))
             os.remove(os.path.join(pages.root, 'foo', 'lorem', 'ipsum.html'))
-            open(os.path.join(pages.root, u'Unïcôdé.html'), 'w').close()
+            open(os.path.join(pages.root, 'Unïcôdé.html'), 'w').close()
             pages.reload()
             self.assertEquals(
                 set(safe_unicode(p.path for p in pages)),
-                set(['foo/bar', 'foo', 'headerid', 'hello', u'Unïcôdé']))
+                set(['foo/bar', 'foo', 'headerid', 'hello', 'Unïcôdé']))
 
 
 if __name__ == '__main__':
